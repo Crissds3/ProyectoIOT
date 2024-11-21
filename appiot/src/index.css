@@ -8,3 +8,9 @@ body {
 #root {
   overflow-x: hidden;
 }
+
+@media (max-width: 767px) {
+  .leaflet-container {
+    height: 300px !important;
+  }
+}

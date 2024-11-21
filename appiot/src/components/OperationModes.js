@@ -17,7 +17,7 @@ function OperationModes() {
       <Card>
         <Card.Body>
           <Card.Title>Seleccione el modo de operación</Card.Title>
-          <ButtonGroup toggle className="mt-2">
+          <ButtonGroup className="mt-2">
             {modes.map((m, idx) => (
               <ToggleButton
                 key={idx}
