@@ -2,14 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
-import { fetchMeasurements } from '../services/influxservice.js';
+import { fetchMeasurements } from '../services/influxservice';
 
-function AddSensorForm({ onAddSensor }) {
+function AddSensorForm({ onAddSensor, selectedPosition }) {
   const [sensorType, setSensorType] = useState(null);
   const [measurement, setMeasurement] = useState(null);
   const [availableMeasurements, setAvailableMeasurements] = useState([]);
-  const [latitude, setLatitude] = useState('');
-  const [longitude, setLongitude] = useState('');
 
   const sensorOptions = [
     { value: 'Lluvia', label: 'Lluvia' },
@@ -29,18 +27,18 @@ function AddSensorForm({ onAddSensor }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (sensorType && measurement && latitude && longitude) {
+    if (sensorType && measurement && selectedPosition) {
       onAddSensor({
         type: sensorType.value,
         measurement: measurement.value,
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
+        latitude: selectedPosition.lat,
+        longitude: selectedPosition.lng,
       });
       // Resetear el formulario
       setSensorType(null);
       setMeasurement(null);
-      setLatitude('');
-      setLongitude('');
+    } else {
+      alert('Por favor, complete todos los campos y seleccione una ubicación en el mapa.');
     }
   };
 
@@ -62,25 +60,17 @@ function AddSensorForm({ onAddSensor }) {
           onChange={setMeasurement}
         />
       </Form.Group>
-      <Form.Group controlId="latitude">
-        <Form.Label>Latitud</Form.Label>
-        <Form.Control
-          type="number"
-          value={latitude}
-          onChange={(e) => setLatitude(e.target.value)}
-          placeholder="Ej: -33.0458"
-        />
+      <Form.Group controlId="location">
+        <Form.Label>Ubicación Seleccionada</Form.Label>
+        {selectedPosition ? (
+          <p>
+            Latitud: {selectedPosition.lat.toFixed(5)}, Longitud: {selectedPosition.lng.toFixed(5)}
+          </p>
+        ) : (
+          <p>Haga clic en el mapa para seleccionar una ubicación.</p>
+        )}
       </Form.Group>
-      <Form.Group controlId="longitude">
-        <Form.Label>Longitud</Form.Label>
-        <Form.Control
-          type="number"
-          value={longitude}
-          onChange={(e) => setLongitude(e.target.value)}
-          placeholder="Ej: -71.6197"
-        />
-      </Form.Group>
-      <Button variant="primary" type="submit" className="mt-3">
+      <Button variant="primary" type="submit" className="mt-3" disabled={!selectedPosition}>
         Agregar Sensor
       </Button>
     </Form>
