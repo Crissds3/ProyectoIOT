@@ -103,7 +103,7 @@ function HeatMap({ sensors, onPositionSelect, addingSensor }) {
                 key={`sensor-${idx}`}
                 center={[sensor.latitude, sensor.longitude]}
                 radius={15} // Ajusta el radio según necesites
-                pathOptions={{ color, fillColor: color, fillOpacity: 0.5 }}
+                pathOptions={{ color, stroke: false, fillColor: getColorForTemperature(temperature), fillOpacity: 0.3, className: 'no-blend' }}
               >
                 <Tooltip>{`Temperatura: ${temperature}°C`}</Tooltip>
               </Circle>
