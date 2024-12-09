@@ -50,17 +50,19 @@ function AddSensorForm({ onAddSensor, selectedPosition }) {
           options={sensorOptions}
           value={sensorType}
           onChange={setSensorType}
+          placeholder="Seleccione un tipo de sensor..."
         />
       </Form.Group>
-      <Form.Group controlId="measurement">
-        <Form.Label>Measurement</Form.Label>
+      <Form.Group controlId="measurement" className="mt-3">
+        <Form.Label>Medición</Form.Label>
         <Select
           options={availableMeasurements}
           value={measurement}
           onChange={setMeasurement}
+          placeholder="Seleccione una medición..."
         />
       </Form.Group>
-      <Form.Group controlId="location">
+      <Form.Group controlId="location" className="mt-3">
         <Form.Label>Ubicación Seleccionada</Form.Label>
         {selectedPosition ? (
           <p>

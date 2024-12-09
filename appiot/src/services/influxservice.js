@@ -1,4 +1,4 @@
-// src/services/influxService.js
+// src/services/influxservice.js
 import { InfluxDB } from '@influxdata/influxdb-client';
 
 const url = process.env.REACT_APP_INFLUX_URL;

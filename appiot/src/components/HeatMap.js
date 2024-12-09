@@ -1,5 +1,5 @@
 // src/components/HeatMap.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -18,6 +18,7 @@ function HeatMap({ sensors, onPositionSelect, addingSensor }) {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const mapHeight = isMobile ? '300px' : '600px';
   const [selectedPosition, setSelectedPosition] = useState(null);
+  const mapRef = useRef(null);
 
   // Coordenadas del campus
   const campusCenter = [-35.00243952632493, -71.22943639165166];
@@ -71,12 +72,17 @@ function HeatMap({ sensors, onPositionSelect, addingSensor }) {
   }
 
   return (
-    <div id="map">
+    <div
+      id="map"
+      ref={mapRef}
+      onMouseEnter={() => mapRef.current.classList.add('scroll-enabled')}
+      onMouseLeave={() => mapRef.current.classList.remove('scroll-enabled')}
+    >
       <MapContainer
         center={campusCenter}
-        zoom={17} // Ajusta el zoom según lo necesites
+        zoom={17}
         style={{ height: mapHeight, width: '100%' }}
-        maxBounds={bounds} // Establece los límites del mapa
+        maxBounds={bounds}
         maxBoundsViscosity={1.0}
       >
         <TileLayer
@@ -98,14 +104,15 @@ function HeatMap({ sensors, onPositionSelect, addingSensor }) {
           } else if (sensor.type === 'Temperatura') {
             const temperature = sensor.data?._value || 0;
             const color = getColorForTemperature(temperature);
+            const radius = getRadiusForTemperature(temperature);
             return (
               <Circle
                 key={`sensor-${idx}`}
                 center={[sensor.latitude, sensor.longitude]}
-                radius={15} // Ajusta el radio según necesites
-                pathOptions={{ color, stroke: false, fillColor: getColorForTemperature(temperature), fillOpacity: 0.3, className: 'no-blend' }}
+                radius={radius} // Usar la función getRadiusForTemperature
+                pathOptions={{ color, fillColor: color, fillOpacity: 0.5, stroke: false }}
               >
-                <Tooltip>{`Temperatura: ${temperature}°C`}</Tooltip>
+                <Tooltip>{`Temperatura: ${temperature.toFixed(1)}°C`}</Tooltip>
               </Circle>
             );
           } else {
@@ -126,6 +133,13 @@ function getColorForTemperature(temp) {
   const r = Math.floor(255 * percentage);
   const b = 255 - r;
   return `rgb(${r}, 0, ${b})`;
+}
+
+// Definir la función getRadiusForTemperature
+function getRadiusForTemperature(temp) {
+  const baseRadius = 10; // Radio base
+  const scaleFactor = 1; // Factor de escala
+  return baseRadius + temp * scaleFactor;
 }
 
 export default HeatMap;
