@@ -1,16 +1,19 @@
 // src/components/OperationModes.js
 import React, { useState, useEffect } from 'react';
-import { Card, ButtonGroup, ToggleButton, Button, Form } from 'react-bootstrap';
+import { Card, Form } from 'react-bootstrap';
 import mqtt from 'mqtt';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+import './OperationModes.css'; 
 
 function OperationModes() {
-  const [mode, setMode] = useState('manual');
-  const [subMode, setSubMode] = useState(null); // Nuevo estado para submodes
+  const [mode, setMode] = useState('automatico');
+  const [subMode, setSubMode] = useState(null);
   const [client, setClient] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [temperatureThreshold, setTemperatureThreshold] = useState(''); // Estado para el campo de texto
-  const [consoleMessages, setConsoleMessages] = useState([]); // Estado para los mensajes de la consola
-  const [consoleVisible, setConsoleVisible] = useState(false); // Estado para mostrar/ocultar la consola
+  const [temperatureThreshold, setTemperatureThreshold] = useState('');
+  const [consoleMessages, setConsoleMessages] = useState([]);
+  const [consoleVisible, setConsoleVisible] = useState(false);
 
   const modes = [
     { name: 'Manual', value: 'manual', command: 'MANUAL' },
@@ -23,15 +26,13 @@ function OperationModes() {
     { name: 'Manual', value: 'manual', command: 'MANUAL' },
   ];
 
-  // Conectar al broker MQTT
   useEffect(() => {
-    // Asegúrate de que el broker MQTT esté configurado para conexiones WebSocket en el puerto 9001
     const mqttClient = mqtt.connect('ws://35.192.191.68:9001/mqtt');
 
     mqttClient.on('connect', () => {
       setIsConnected(true);
       console.log('Conectado al broker MQTT');
-      mqttClient.subscribe('all_prints'); // Suscribirse al tópico al conectar
+      mqttClient.subscribe('all_prints');
     });
 
     mqttClient.on('error', (err) => {
@@ -44,7 +45,7 @@ function OperationModes() {
       if (topic === 'all_prints') {
         setConsoleMessages((prevMessages) => {
           const newMessages = [...prevMessages, message.toString()];
-          return newMessages.slice(-8); // Mantener solo los últimos 5 mensajes
+          return newMessages.slice(-8);
         });
       }
     });
@@ -60,8 +61,8 @@ function OperationModes() {
 
   const handleModeChange = (selectedMode) => {
     setMode(selectedMode);
-    setSubMode(null); // Resetear subMode al cambiar el modo principal
-    const modeCommand = modes.find(m => m.value === selectedMode)?.command;
+    setSubMode(null);
+    const modeCommand = modes.find((m) => m.value === selectedMode)?.command;
     if (client && isConnected && modeCommand) {
       client.publish('sensor_commands', modeCommand);
       console.log(`Publicado comando: ${modeCommand}`);
@@ -70,7 +71,7 @@ function OperationModes() {
 
   const handleSubModeChange = (selectedSubMode) => {
     setSubMode(selectedSubMode);
-    const subModeCommand = subModes.find(sm => sm.value === selectedSubMode)?.command;
+    const subModeCommand = subModes.find((sm) => sm.value === selectedSubMode)?.command;
     if (client && isConnected && subModeCommand) {
       client.publish('sensor_commands', subModeCommand);
       console.log(`Publicado comando: ${subModeCommand}`);
@@ -78,19 +79,32 @@ function OperationModes() {
   };
 
   const handleManualControl = (command) => {
-    if (client && isConnected && (mode === 'manual' || (mode === 'semiautomatico' && subMode === 'manual'))) {
+    if (
+      client &&
+      isConnected &&
+      (mode === 'manual' || (mode === 'semiautomatico' && subMode === 'manual'))
+    ) {
       client.publish('sensor_commands', command.toLowerCase());
       console.log(`Publicado comando: ${command.toLowerCase()}`);
     }
   };
 
   const handleUpdateTemperature = () => {
-    if (client && isConnected && temperatureThreshold) {
-      const message = `UpdateTemp: ${temperatureThreshold}`;
-      client.publish('sensor_commands', message);
-      console.log(`Publicado comando: ${message}`);
-      alert(`Umbral de temperatura del relé actualizado a ${temperatureThreshold} grados Celsius`);
-      setTemperatureThreshold(''); // Limpiar el campo de texto después de enviar el mensaje
+    if (client && isConnected && temperatureThreshold !== '') {
+      client.publish(
+        'sensor_commands',
+        `TEMPERATURE_THRESHOLD:${temperatureThreshold}`
+      );
+      console.log(`Publicado comando: TEMPERATURE_THRESHOLD:${temperatureThreshold}`);
+
+      Swal.fire({
+        title: 'Umbral de Temperatura Actualizado',
+        text: `El umbral se ha cambiado a ${temperatureThreshold} °C`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+      });
+
+      setTemperatureThreshold('');
     }
   };
 
@@ -99,73 +113,60 @@ function OperationModes() {
   };
 
   return (
-    <Card id="modes">
+    <Card id="operation-modes">
       <Card.Body>
         <Card.Title>Modos de Operación</Card.Title>
-        <ButtonGroup className="mt-2 d-flex">
+        <div className="mode-buttons">
           {modes.map((m, idx) => (
-            <ToggleButton
+            <button
               key={idx}
-              type="radio"
-              variant="outline-primary"
-              name="mode"
-              value={m.value}
-              checked={mode === m.value}
-              onChange={(e) => handleModeChange(e.currentTarget.value)}
+              className={`mode-button ${mode === m.value ? 'active' : ''}`}
+              onClick={() => handleModeChange(m.value)}
             >
+              <input
+                type="radio"
+                name="mode"
+                value={m.value}
+                checked={mode === m.value}
+                readOnly
+              />
               {m.name}
-            </ToggleButton>
+            </button>
           ))}
-        </ButtonGroup>
-        
-        {/* Sub-botones para modo Semiautomático */}
+        </div>
+
         {mode === 'semiautomatico' && (
-          <div className="mt-3 d-flex justify-content-center gap-2">
-            <Button
-              variant="secondary"
-              onClick={() => handleSubModeChange('automatico')}
-            >
-              Automático
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => handleSubModeChange('manual')}
-            >
-              Manual
-            </Button>
+          <div className="submode-buttons">
+            {subModes.map((sm, idx) => (
+              <button
+                key={idx}
+                className={`submode-button ${subMode === sm.value ? 'active' : ''}`}
+                onClick={() => handleSubModeChange(sm.value)}
+              >
+                {sm.name}
+              </button>
+            ))}
           </div>
         )}
 
-        {/* Botones de control manual */}
-        <div className="mt-3 d-flex justify-content-center gap-2">
-          <Button
-            variant="success"
-            disabled={
-              !(
-                mode === 'manual' ||
-                (mode === 'semiautomatico' && subMode === 'manual')
-              )
-            }
-            onClick={() => handleManualControl('ENCENDER')}
-          >
-            Encender
-          </Button>
-          <Button
-            variant="danger"
-            disabled={
-              !(
-                mode === 'manual' ||
-                (mode === 'semiautomatico' && subMode === 'manual')
-              )
-            }
-            onClick={() => handleManualControl('APAGAR')}
-          >
-            Apagar
-          </Button>
-        </div>
+        {(mode === 'manual' || (mode === 'semiautomatico' && subMode === 'manual')) && (
+          <div className="manual-controls">
+            <button
+              className="control-button encender"
+              onClick={() => handleManualControl('ENCENDER')}
+            >
+              Encender
+            </button>{' '}
+            <button
+              className="control-button apagar"
+              onClick={() => handleManualControl('APAGAR')}
+            >
+              Apagar
+            </button>
+          </div>
+        )}
 
-        {/* Campo de texto y botón de actualizar */}
-        <div className="mt-3">
+        <div className="temperature-control">
           <Form.Group className="mb-3" controlId="formTemperatureThreshold">
             <Form.Label>Umbral de Temperatura</Form.Label>
             <Form.Control
@@ -175,25 +176,23 @@ function OperationModes() {
               placeholder="Ingrese el umbral de temperatura"
             />
           </Form.Group>
-          <Button variant="primary" onClick={handleUpdateTemperature}>
+          <button className="update-temperature" onClick={handleUpdateTemperature}>
             Actualizar
-          </Button>
+          </button>
         </div>
 
-        {/* Botón para mostrar/ocultar la consola */}
-        <div className="mt-3">
-          <Button variant="info" onClick={toggleConsoleVisibility}>
+        <div className="console-toggle">
+          <button className="console-button" onClick={toggleConsoleVisibility}>
             {consoleVisible ? 'Ocultar Consola' : 'Mostrar Consola'}
-          </Button>
+          </button>
         </div>
 
-        {/* Consola de mensajes */}
         {consoleVisible && (
-          <div className="mt-3 console">
-            <h5>Consola de Mensajes</h5>
+          <div className="console">
+            <h5><strong>Consola de MQTT</strong></h5>
             <div className="console-messages">
               {consoleMessages.map((msg, idx) => (
-                <div key={idx}>{msg}</div>
+                <p key={idx}>{msg}</p>
               ))}
             </div>
           </div>

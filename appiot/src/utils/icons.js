@@ -14,3 +14,24 @@ export const getSunIcon = () =>
     iconSize: [24, 24],
     className: 'sun-icon',
   });
+
+export const getHumidityIcon = () =>
+  L.divIcon({
+    html: `<div style="font-size: 24px; color: teal;">💧</div>`,
+    iconSize: [24, 24],
+    className: 'humidity-icon',
+  });
+
+export const getPressureIcon = () =>
+  L.divIcon({
+    html: `<div style="font-size: 24px; color: purple;">🌡️</div>`,
+    iconSize: [24, 24],
+    className: 'pressure-icon',
+  });
+
+export const getWindIcon = () =>
+  L.divIcon({
+    html: `<div style="font-size: 24px; color: gray;">💨</div>`,
+    iconSize: [24, 24],
+    className: 'wind-icon',
+  });

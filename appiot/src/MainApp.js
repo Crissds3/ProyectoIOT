@@ -1,10 +1,17 @@
 // src/MainApp.js
-import React, { useState, useEffect } from 'react';
-import { Container, Navbar, Row, Col, Button, ListGroup } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import HeatMap from './components/HeatMap';
-import AddSensorForm from './components/AddSensorForm';
-import OperationModes from './components/OperationModes';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  Navbar,
+  Row,
+  Col,
+  Button,
+  ListGroup,
+} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import HeatMap from "./components/HeatMap";
+import AddSensorForm from "./components/AddSensorForm";
+import OperationModes from "./components/OperationModes";
 
 function MainApp() {
   const [sensors, setSensors] = useState([]);
@@ -12,17 +19,15 @@ function MainApp() {
   const [addingSensor, setAddingSensor] = useState(false);
   const navigate = useNavigate();
 
-  // Cargar sensores desde localStorage al montar el componente
   useEffect(() => {
-    const storedSensors = localStorage.getItem('sensors');
+    const storedSensors = localStorage.getItem("sensors");
     if (storedSensors) {
       setSensors(JSON.parse(storedSensors));
     }
   }, []);
 
-  // Guardar sensores en localStorage cada vez que cambien
   useEffect(() => {
-    localStorage.setItem('sensors', JSON.stringify(sensors));
+    localStorage.setItem("sensors", JSON.stringify(sensors));
   }, [sensors]);
 
   const handleAddSensor = (sensor) => {
@@ -42,20 +47,41 @@ function MainApp() {
   };
 
   const handleReturnToWelcome = () => {
-    navigate('/');
+    navigate("/");
+  };
+
+  const getSensorIconClass = (type) => {
+    switch (type) {
+      case "Temperatura":
+        return "fa-thermometer-half";
+      case "Humedad":
+        return "fa-tint";
+      case "Lluvia":
+        return "fa-cloud-rain";
+      case "Presion":
+        return "fa-tachometer-alt";
+      case "Viento":
+        return "fa-wind";
+      default:
+        return "fa-question-circle";
+    }
   };
 
   return (
     <div className="app-container">
       {/* Navbar */}
-      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
-        <Container>
-          <Navbar.Brand>
-            <i className="fas fa-cloud-sun mr-2"></i>
+      <Navbar expand="md" className="custom-navbar mb-4">
+        <Container fluid className="navbar-container">
+          <Navbar.Brand className="navbar-brand-custom m-0">
+            <i className="fas fa-cloud-sun me-2"></i>
             Sistema de Monitoreo Meteorológico
           </Navbar.Brand>
-          <Button variant="outline-light" onClick={handleReturnToWelcome}>
-            Volver a Bienvenida
+          <Button
+            variant="light"
+            className="welcome-btn"
+            onClick={handleReturnToWelcome}
+          >
+            <i className="fas fa-home me-2"></i>Bienvenida
           </Button>
         </Container>
       </Navbar>
@@ -73,24 +99,24 @@ function MainApp() {
             </div>
           </Col>
           <Col lg={4}>
-            <div className="control-panel">
+            <div className="control-panel p-4 rounded shadow-sm">
               {!addingSensor ? (
                 <>
                   <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h4 className="mb-0">Panel de Control</h4>
+                    <h4 className="mb-0 panel-title">Panel de Control</h4>
                     <Button
                       variant="primary"
                       onClick={() => setAddingSensor(true)}
-                      className="btn-custom"
+                      className="btn-custom-add"
                     >
-                      <i className="fas fa-plus mr-2"></i>
+                      <i className="fas fa-plus me-2"></i>
                       Agregar Sensor
                     </Button>
                   </div>
                   <div className="sensor-list-container">
                     <h5 className="mb-3">Sensores Activos</h5>
                     {sensors.length > 0 ? (
-                      <ListGroup>
+                      <ListGroup className="sensor-list">
                         {sensors.map((sensor, index) => (
                           <ListGroup.Item
                             key={`sensor-${index}`}
@@ -98,11 +124,7 @@ function MainApp() {
                           >
                             <span>
                               <i
-                                className={`fas ${
-                                  sensor.type === 'Temperatura'
-                                    ? 'fa-thermometer-half'
-                                    : 'fa-cloud-rain'
-                                } mr-2`}
+                                className={`fas ${getSensorIconClass(sensor.type)} sensor-icon`}
                               ></i>
                               {sensor.type} - {sensor.measurement}
                             </span>
@@ -110,9 +132,56 @@ function MainApp() {
                               variant="outline-danger"
                               size="sm"
                               onClick={() => handleDeleteSensor(index)}
-                              className="btn-custom-sm"
+                              className="botonBorrar bin-button"
+                              title="Eliminar sensor"
                             >
-                              <i className="fas fa-trash-alt"></i>
+                              <svg
+                                className="bin-top"
+                                viewBox="0 0 39 7"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <line
+                                  y1="5"
+                                  x2="39"
+                                  y2="5"
+                                  stroke="white"
+                                  strokeWidth="4"
+                                ></line>
+                                <line
+                                  x1="12"
+                                  y1="1.5"
+                                  x2="26.0357"
+                                  y2="1.5"
+                                  stroke="white"
+                                  strokeWidth="3"
+                                ></line>
+                              </svg>
+                              <svg
+                                className="bin-bottom"
+                                viewBox="0 0 33 39"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <mask id="path-1-inside-1_8_19" fill="white">
+                                  <path d="M0 0H33V35C33 37.2091 31.2091 39 29 39H4C1.79086 39 0 37.2091 0 35V0Z" />
+                                </mask>
+                                <path
+                                  d="M0 0H33H0ZM37 35C37 39.4183 33.4183 43 29 43H4C-0.418278 43 -4 39.4183 -4 35H4H29H37ZM4 43C-0.418278 43 -4 39.4183 -4 35V0H4V35V43ZM37 0V35C37 39.4183 33.4183 43 29 43V35V0H37Z"
+                                  fill="white"
+                                  mask="url(#path-1-inside-1_8_19)"
+                                ></path>
+                                <path
+                                  d="M12 6L12 29"
+                                  stroke="white"
+                                  strokeWidth="4"
+                                ></path>
+                                <path
+                                  d="M21 6V29"
+                                  stroke="white"
+                                  strokeWidth="4"
+                                ></path>
+                              </svg>
                             </Button>
                           </ListGroup.Item>
                         ))}
@@ -134,7 +203,7 @@ function MainApp() {
                   />
                   <Button
                     variant="outline-secondary"
-                    className="mt-3 w-100"
+                    className="mt-3 w-100 cancel-button"
                     onClick={() => {
                       setAddingSensor(false);
                       setSelectedPosition(null);

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import { fetchMeasurements } from '../services/influxservice';
+import './AddSensorForm.css';
 
 function AddSensorForm({ onAddSensor, selectedPosition }) {
   const [sensorType, setSensorType] = useState(null);
@@ -12,13 +13,16 @@ function AddSensorForm({ onAddSensor, selectedPosition }) {
   const sensorOptions = [
     { value: 'Lluvia', label: 'Lluvia' },
     { value: 'Temperatura', label: 'Temperatura' },
+    { value: 'Humedad', label: 'Humedad' },
+    { value: 'Presion', label: 'Presion' },
+    { value: 'Viento', label: 'Viento' },
   ];
 
   useEffect(() => {
     const getMeasurements = async () => {
       const measurements = await fetchMeasurements();
       setAvailableMeasurements(
-        measurements.map((m) => ({ value: m, label: m }))
+        measurements.map((m) => ({ value: m.label, label: `${m.label} (${m.source})` }))
       );
     };
 
@@ -47,6 +51,7 @@ function AddSensorForm({ onAddSensor, selectedPosition }) {
       <Form.Group controlId="sensorType">
         <Form.Label>Tipo de Sensor</Form.Label>
         <Select
+          className="sensorType-select"
           options={sensorOptions}
           value={sensorType}
           onChange={setSensorType}
@@ -56,6 +61,7 @@ function AddSensorForm({ onAddSensor, selectedPosition }) {
       <Form.Group controlId="measurement" className="mt-3">
         <Form.Label>Medición</Form.Label>
         <Select
+          className="measurement-select"
           options={availableMeasurements}
           value={measurement}
           onChange={setMeasurement}

@@ -98,3 +98,24 @@ html, body {
   transform: scale(1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+@media (max-width: 768px) {
+  .content-box {
+    width: 70%;
+  } 
+  .content-box h1 {
+    font-size: 40px;
+  }
+  .content-box .descripcion {
+    font-size: 20px;
+  }
+  .content-box .descripcion2 {
+    font-size: 18px;
+  }
+  .content-box .btn {
+    font-size: 18px;
+    width: 100%;
+  }
+
+
+}

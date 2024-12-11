@@ -1,4 +1,4 @@
-/* src/App.css */
+@import '~sweetalert2/dist/sweetalert2.min.css';
 
 /* Estilos globales */
 body {
@@ -60,4 +60,5 @@ h2 {
 #map.scroll-enabled {
   pointer-events: auto; /* Habilitar eventos de puntero cuando el cursor está sobre el mapa */
 }
+
 
