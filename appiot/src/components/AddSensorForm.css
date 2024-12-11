@@ -1,0 +1,22 @@
+/* src/components/AddSensorForm.css */
+.measurement-select {
+    z-index: 1000; /* Asegurar que el menú de selección esté por encima de todos los elementos */
+  }
+
+
+.sensorType-select{
+    z-index:2000;
+}
+
+.add-sensor-submit-button {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  transition: background 0.3s ease;
+}
+
+.add-sensor-submit-button:hover {
+  background: linear-gradient(135deg, #0056b3, #003f7f) !important;
+}

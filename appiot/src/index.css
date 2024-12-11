@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+body {
+  background-image: url('./assets/prueba3.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  position: relative;
+  min-height: 100vh; /* Asegura que el body cubra toda la altura */
+}
+
+body::before {
+  content: '';
+  position: fixed; /* Cambiado de absolute a fixed */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.2); 
+  z-index: -1;
+  pointer-events: none; /* Permite que los eventos pasen a través de esta capa */
+}
+#root {
+  overflow-x: hidden;
+}
+
+@media (max-width: 767px) {
+  .leaflet-container {
+    height: 300px !important;
+  }
+
+}
+
+.leaflet-container {
+  border-radius: 4px;
+}
+.control-panel{
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+  background-color: #faf9f6;;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/*
+.sensor-list-container {
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}	
+*/
+
+.bin-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  border-radius: 10px;
+  background-color: rgb(255, 95, 95);
+  cursor: pointer;
+  transition-duration: 0.3s;
+}
+.bin-bottom {
+  width: 12px;
+}
+.bin-top {
+  width: 14px;
+  transform-origin: right;
+  transition-duration: 0.3s;
+}
+.bin-button:hover .bin-top {
+  transform: rotate(45deg);
+}
+.bin-button:hover {
+  background-color: rgb(255, 0, 0);
+}
+.bin-button:active {
+  transform: scale(0.9);
+}
+
+.control-panel {
+  margin-top: 20px; /* Ajusta según tus necesidades */
+}
+
+/* Navbar styling */
+.custom-navbar {
+  background: linear-gradient(135deg, #004d80, #00264d) !important;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Contenedor principal de la navbar */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Ajustar el tamaño del texto del título en pantallas pequeñas */
+.navbar-brand-custom {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff !important;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column; /* Cambia a columna en pantallas pequeñas */
+  }
+
+  .navbar-brand-custom {
+    font-size: 1.2rem;
+    margin-bottom: 10px; /* Espacio para el botón debajo */
+  }
+
+  .welcome-btn {
+    margin: 0 auto; /* Centra el botón horizontalmente */
+  }
+}
+
+/* Bienvenida Button */
+.welcome-btn {
+  background: linear-gradient(135deg, #0056b3, #003f7f) !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  font-weight: bold;
+  transition: 0.3s ease;
+  white-space: nowrap;
+}
+
+.welcome-btn:hover {
+  background: linear-gradient(135deg, #003f7f, #002c5c) !important;
+
+}
+
+/* Panel de Control */
+.panel-title {
+  font-weight: 700;
+  color: #343a40;
+}
+
+.btn-custom-add {
+  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+  border: none !important;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  
+}
+
+.btn-custom-add:hover {
+  background: linear-gradient(135deg, #0056b3, #003f7f) !important;
+}
+
+.sensor-icon {
+  margin-right: 8px;
+  color: #007bff;
+}
+
+
+.cancel-button {
+  background: linear-gradient(135deg, #6c757d, #5a6268) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  transition: background 0.3s ease;
+}
+
+.cancel-button:hover {
+  background: linear-gradient(135deg, #5a6268, #4e555b) !important;
+}
+
+
+

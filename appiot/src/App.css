@@ -1,0 +1,64 @@
+@import '~sweetalert2/dist/sweetalert2.min.css';
+
+/* Estilos globales */
+body {
+  margin: 0;
+  padding: 0;
+
+  background-color: #f8f9fa;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  margin: 0;
+  padding: 0;
+}
+
+/* Asegúrate de que el contenedor raíz ocupe toda la altura */
+#root {
+  min-height: 100vh;
+}
+
+h2 {
+  margin-top: 20px;
+}
+
+@media (max-width: 767px) {
+  h2 {
+    font-size: 1.5em;
+  }
+}
+
+.no-blend {
+  mix-blend-mode: multiply;
+}
+
+#map {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.card {
+  margin-bottom: 20px;
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+/* src/App.css */
+#map {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  pointer-events: none; /* Deshabilitar eventos de puntero por defecto */
+}
+
+#map.scroll-enabled {
+  pointer-events: auto; /* Habilitar eventos de puntero cuando el cursor está sobre el mapa */
+}
+
+
